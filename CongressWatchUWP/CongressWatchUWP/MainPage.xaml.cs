@@ -26,5 +26,10 @@ namespace CongressWatchUWP
         {
             this.InitializeComponent();
         }
+
+        private async void Zip_Button_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

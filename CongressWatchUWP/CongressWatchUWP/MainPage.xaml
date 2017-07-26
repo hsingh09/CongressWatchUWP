@@ -21,8 +21,8 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <TextBox Grid.Row="0" VerticalAlignment="Center" PlaceholderText="Enter your Zip Code"/>
-            <Button Grid.Row="1" VerticalAlignment="Center" Content="Submit" />
+            <TextBox Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" PlaceholderText="Enter your Zip Code"/>
+            <Button Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Click="Zip_Button_Click" Content="Submit" />
         </Grid>
     </Grid>
 </Page>
