@@ -23,21 +23,136 @@ namespace CongressWatchUWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        List<Representative> m_myReps;
+
         public MainPage()
         {
             this.InitializeComponent();
+            m_myReps = new List<Representative>();
         }
 
         private async void Zip_Button_Click(object sender, RoutedEventArgs e)
         {
+            RepList.Items.Clear();
+
             string zip = "98122";
             if (zipcodeBox.Text != string.Empty)
                 zip = zipcodeBox.Text;
-            List<Representative> reps = await RemoteAPIs.RESTClient.GetRepresentativesAsync("http://localhost:8081/zipcode/"+zip);
+             List<Representative> reps = await RemoteAPIs.RESTClient.GetRepresentativesAsync("http://congresswatch.azurewebsites.net/zipcode/" + zip);
             foreach (Representative r in reps)
             {
-                RepList.Items.Add(r.firstName + " " + r.lastName);
+                RepresentativeView repView = new RepresentativeView(r);
+                
+                RepList.Items.Add(repView);
+                if (m_myReps.Contains(r))
+                    repView.isFav = true;
+
             }
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            ToggleButton toggleButton = sender as ToggleButton;
+            RepresentativeView repView = toggleButton.DataContext as RepresentativeView;
+            if (repView != null)
+            {
+                m_myReps.Add(repView.rep);
+            }
+        }
+
+        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ToggleButton toggleButton = sender as ToggleButton;
+            RepresentativeView repView = toggleButton.DataContext as RepresentativeView;
+            m_myReps.Remove(repView.rep);
+        }
+
+        private void MyReps_Click(object sender, RoutedEventArgs e)
+        {
+            ZipCodeSearch.Visibility = Visibility.Collapsed;
+            FindMyRepsButton.Visibility = Visibility.Visible;
+            RepList.Items.Clear();
+            
+            foreach (Representative r in m_myReps)
+            {
+                RepresentativeView repView = new RepresentativeView(r);
+                RepList.Items.Add(repView);
+                if (m_myReps.Contains(r))
+                    repView.isFav = true;
+            }
+        }
+
+        private async void IdealHouse_Click(object sender, RoutedEventArgs e)
+        {
+            ZipCodeSearch.Visibility = Visibility.Collapsed;
+            FindMyRepsButton.Visibility = Visibility.Collapsed;
+            RepList.Items.Clear();
+            
+            List<Representative> reps = await RemoteAPIs.RESTClient.GetRepresentativesAsync("http://congresswatch.azurewebsites.net/house");
+            foreach (Representative r in reps)
+            {
+                RepresentativeView repView = new RepresentativeView(r);
+                RepList.Items.Add(repView);
+                if (m_myReps.Contains(r))
+                    repView.isFav = true;
+            }
+        }
+
+        private async void IdealSenate_Click(object sender, RoutedEventArgs e)
+        {
+            ZipCodeSearch.Visibility = Visibility.Collapsed;
+            FindMyRepsButton.Visibility = Visibility.Collapsed;
+
+            RepList.Items.Clear();
+
+            
+            List<Representative> reps = await RemoteAPIs.RESTClient.GetRepresentativesAsync("http://congresswatch.azurewebsites.net/senate");
+            foreach (Representative r in reps)
+            {
+                RepresentativeView repView = new RepresentativeView(r);
+                RepList.Items.Add(repView);
+                if (m_myReps.Contains(r))
+                    repView.isFav = true;
+
+            }
+        }
+
+        private void FindMyRepsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ZipCodeSearch.Visibility = Visibility.Visible;
+            FindMyRepsButton.Visibility = Visibility.Collapsed;
+
+        }
+    }
+
+    class RepresentativeView
+    {
+        public Representative rep { get; set; }
+        public string displayName { get; set; }
+        public int repId { get; set; }
+        public string chamber { get; set; }
+        public string party { get; set; }
+        public bool? isFav { get; set; }
+
+    public RepresentativeView(Representative r)
+        {
+            rep = r;
+            displayName = rep.firstName + " " + rep.lastName;
+            isFav = false;
+
+            switch (rep.chamber)
+            {
+                case 0:
+                    chamber = "house";
+                    break;
+                case 1:
+                    chamber = "senate";
+                    break;
+                default:
+                    break;
+            }
+            // need to convert rep.charter from 0||1 for house/senate
+            // need to convert rep.party from 0..9 for dem, rep , green other
         }
     }
 }

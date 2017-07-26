@@ -15,7 +15,18 @@ namespace CongressWatchUWP.RemoteAPIs
     class Representative
     {
         public string firstName { get; set; }
-        public string lastName { get; set; }
+        public string lastName { get; set; }    
+        public string representativeId { get; set; }
+        public int chamber { get; set; }
+        public string party { get; set; }
+        public override bool Equals(Object obj)
+        {
+            return representativeId.Equals(((Representative)obj).representativeId);
+        }
+        public override int GetHashCode()
+        {
+            return representativeId.GetHashCode();
+        }
     }
     class RESTClient
     {
