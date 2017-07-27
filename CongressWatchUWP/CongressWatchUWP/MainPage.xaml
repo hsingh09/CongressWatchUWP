@@ -11,17 +11,21 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="8*"/>
-            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Congress Watch"/>
-        <Grid Grid.Row="1" Background="LightSteelBlue">
+        <TextBlock Grid.Row="0" FontSize="50" FontFamily="Times New Roman" FontWeight="Medium" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Congress Watch"/>
+        <Grid Grid.Row="1" Background="SlateGray">
             <!--Main area-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="ZipCodeSearch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="ZipCodeSearch" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
@@ -29,30 +33,42 @@
                 <TextBox Name="zipcodeBox" Grid.Column="0" VerticalAlignment="Center" PlaceholderText="Enter your Zip Code"/>
                 <Button Grid.Column="1" VerticalAlignment="Center" Click="Zip_Button_Click" Content="Submit" />
             </Grid>
-            <Button x:Name="FindMyRepsButton" Visibility="Collapsed" Click="FindMyRepsButton_Click"/>
-            <ListView Name="RepList" Grid.Row="1" SelectionMode="None">
+            <Button x:Name="FindMyRepsButton" Content="+" Grid.Row="2" Visibility="Collapsed" Click="FindMyRepsButton_Click"/>
+            <ListView Name="RepList" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" SelectionMode="None" Margin="0,1,0,0">
+                <!-- All these styles need to be refactored into styles file-->
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="BorderThickness" Value=".1"/>
+                        <Setter Property="Margin" Value="0,2,0,2"/>
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:RepresentativeView" >
-                        <Grid HorizontalAlignment="Stretch">
+                    <DataTemplate x:DataType="local:RepresentativeView">
+                        <Grid Background="{x:Bind displayColor}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition MinWidth="12"  Width="*"/>
-                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="20*"/>
+                                <ColumnDefinition Width="60*"/>
+                                <ColumnDefinition Width="20*"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Vertical" Grid.Column="0">
-                                <TextBlock Text="{x:Bind displayName}"/>
+                            <Image Source="Assets/satya_500x500.jpg"/>
+                            <StackPanel BorderThickness="10" Orientation="Vertical" Grid.Column="1">
+                                <TextBlock FontWeight="Medium" Text="{x:Bind displayName}"/>
                                 <TextBlock Text="{x:Bind chamber}"/>
                                 <TextBlock Text="{x:Bind party}"/>
                             </StackPanel>
-                            <ToggleButton IsChecked="{x:Bind isFav, Mode=TwoWay}" Grid.Column="2" Content="Watch" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
+                            <ToggleButton HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsChecked="{x:Bind isFav, Mode=TwoWay}" Grid.Column="2" Content="Watch" Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" >
-                <Button x:Name="MyReps" Content="My Reps" Visibility="Visible" Click="MyReps_Click"/>
-                <Button x:Name="IdealHouse" Margin="10,0" Content="My Ideal House" Visibility="Visible" Click="IdealHouse_Click"/>
-                <Button x:Name="IdealSenate" Content="My Ideal Senate" Visibility="Visible" Click="IdealSenate_Click"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                <Button x:Name="MyReps" Content="My Reps" Visibility="Visible" Click="MyReps_Click" Background="DarkGray"/>
+                <Button x:Name="IdealHouse" Margin="10,0" Content="My Ideal House" Visibility="Visible" Click="IdealHouse_Click" Background="DarkGray"/>
+                <Button x:Name="IdealSenate" Content="My Ideal Senate" Visibility="Visible" Click="IdealSenate_Click" Background="DarkGray"/>
             </StackPanel>
         </Grid>
     </Grid>

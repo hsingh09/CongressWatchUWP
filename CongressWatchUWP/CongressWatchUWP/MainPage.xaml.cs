@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using CongressWatchUWP.RemoteAPIs;
+using Windows.UI;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -24,6 +25,13 @@ namespace CongressWatchUWP
     public sealed partial class MainPage : Page
     {
         List<Representative> m_myReps;
+
+        enum currentMode
+        {
+            myReps,
+            idealHouse,
+            idealSenate
+        };
 
         public MainPage()
         {
@@ -69,6 +77,7 @@ namespace CongressWatchUWP
 
         private void MyReps_Click(object sender, RoutedEventArgs e)
         {
+            MakeUniqueYellowButton(currentMode.myReps);
             ZipCodeSearch.Visibility = Visibility.Collapsed;
             FindMyRepsButton.Visibility = Visibility.Visible;
             RepList.Items.Clear();
@@ -84,6 +93,7 @@ namespace CongressWatchUWP
 
         private async void IdealHouse_Click(object sender, RoutedEventArgs e)
         {
+            MakeUniqueYellowButton(currentMode.idealHouse);
             ZipCodeSearch.Visibility = Visibility.Collapsed;
             FindMyRepsButton.Visibility = Visibility.Collapsed;
             RepList.Items.Clear();
@@ -100,6 +110,7 @@ namespace CongressWatchUWP
 
         private async void IdealSenate_Click(object sender, RoutedEventArgs e)
         {
+            MakeUniqueYellowButton(currentMode.idealSenate);
             ZipCodeSearch.Visibility = Visibility.Collapsed;
             FindMyRepsButton.Visibility = Visibility.Collapsed;
 
@@ -123,12 +134,35 @@ namespace CongressWatchUWP
             FindMyRepsButton.Visibility = Visibility.Collapsed;
 
         }
+
+        private void MakeUniqueYellowButton(currentMode mode)
+        {
+            IdealHouse.Background = new SolidColorBrush(Colors.DarkGray);
+            IdealSenate.Background = new SolidColorBrush(Colors.DarkGray);
+            MyReps.Background = new SolidColorBrush(Colors.DarkGray);
+
+            switch (mode)
+            {
+                case currentMode.myReps:
+                    MyReps.Background = new SolidColorBrush(Colors.Yellow);
+                    break;
+                case currentMode.idealHouse:
+                    IdealHouse.Background = new SolidColorBrush(Colors.Yellow);
+                    break;
+                case currentMode.idealSenate:
+                    IdealSenate.Background = new SolidColorBrush(Colors.Yellow);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     class RepresentativeView
     {
         public Representative rep { get; set; }
         public string displayName { get; set; }
+        public SolidColorBrush displayColor { get; set; }
         public int repId { get; set; }
         public string chamber { get; set; }
         public string party { get; set; }
@@ -140,13 +174,28 @@ namespace CongressWatchUWP
             displayName = rep.firstName + " " + rep.lastName;
             isFav = false;
 
+            switch(rep.party)
+            {
+                case "0":
+                    displayColor = new SolidColorBrush(Colors.RoyalBlue);
+                    break;
+                case "1":
+                    displayColor = new SolidColorBrush(Colors.Crimson);
+                    break;
+                case "2":
+                    displayColor = new SolidColorBrush(Colors.SeaGreen);
+                    break;
+                default:
+                    displayColor = new SolidColorBrush(Colors.Purple);
+                    break;
+            }
             switch (rep.chamber)
             {
                 case 0:
-                    chamber = "house";
+                    chamber = "House";
                     break;
                 case 1:
-                    chamber = "senate";
+                    chamber = "Senate";
                     break;
                 default:
                     break;
